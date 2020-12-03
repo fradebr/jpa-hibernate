@@ -47,4 +47,14 @@ public class Detail {
     public void setPrice(final Double price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "Detail{" +
+                "id=" + id +
+                ", minimumStock=" + minimumStock +
+                ", maximumStock=" + maximumStock +
+                ", price=" + price +
+                '}';
+    }
 }

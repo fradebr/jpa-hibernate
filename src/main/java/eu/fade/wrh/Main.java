@@ -5,64 +5,121 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-import eu.fade.wrh.domain.Detail;
+import eu.fade.wrh.domain.Item;
 
 public class Main {
 
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("warehouse");;
     EntityManager em;
 
-    private void createAndUpdate() {
+
+    private Item createNewItem(Item item) {
+        System.out.println("Start createNewItem ...");
         em = emf.createEntityManager();
 
         EntityTransaction tx = em.getTransaction();
 
         tx.begin();
-        Detail detail = new Detail();
-        detail.setMaximumStock(10);
-        detail.setMinimumStock(2);
-        detail.setPrice(10.5);
-        em.persist(detail);
+        em.persist(item);
         tx.commit();
-
-        Detail detailRetrieved = em.find(Detail.class, 1);
-        System.out.println(detailRetrieved.getId() + " - " +
-                                   detailRetrieved.getMaximumStock() + " - " +
-                                   detailRetrieved.getMinimumStock() + " - " +
-                                   detailRetrieved.getPrice());
-
-        tx.begin();
-        detailRetrieved.setMaximumStock(20);
-        em.persist(detailRetrieved);
-        tx.commit();
-
-        Detail detailUpdatedRetrieved = em.find(Detail.class, 1);
-        System.out.println(detailUpdatedRetrieved.getId() + " - " +
-                                   detailUpdatedRetrieved.getMaximumStock() + " - " +
-                                   detailUpdatedRetrieved.getMinimumStock() + " - " +
-                                   detailUpdatedRetrieved.getPrice());
-
+        System.out.println(item);
         em.close();
-        detailUpdatedRetrieved.setMaximumStock(99);
-
+        System.out.println("End createNewItem ...");
+        return item;
     }
 
-    private void findDetail() {
-
+    private Item findItemById(int id) {
+        System.out.println("Start findItem ...");
         em = emf.createEntityManager();
-        Detail detailRetrieved = em.find(Detail.class, 1);
-        System.out.println(detailRetrieved.getId() + " - " +
-                                   detailRetrieved.getMaximumStock() + " - " +
-                                   detailRetrieved.getMinimumStock() + " - " +
-                                   detailRetrieved.getPrice());
+        Item retrievedItem = em.find(Item.class, id);
+        if (retrievedItem != null) {
+            System.out.println(retrievedItem);
+        } else {
+            System.out.println("Item with id " + id + " could not be found");
+        }
+        System.out.println("End findItem ...");
+        em.close();
+        return retrievedItem;
+    }
 
+    private void getReference(int id) {
+        System.out.println("Start getReference ...");
+        em = emf.createEntityManager();
+        Item retrievedItem = em.getReference(Item.class, id);
+        System.out.println("No SQL executed so far ...");
+        System.out.println(retrievedItem);
+        System.out.println("Now the SQL is executed");
+        System.out.println("End getReference ...");
+        em.close();
+    }
+
+    private void removeItem(Item item) {
+        System.out.println("Start removeItem ...");
+        em = emf.createEntityManager();
+        // Merge is necessary here as the em is closed everytime, so the persistence context is cleared
+        Item itemToRemove = em.merge(item);
+        EntityTransaction tx = em.getTransaction();
+
+        tx.begin();
+        em.remove(itemToRemove);
+        tx.commit();
+        System.out.println("End removeItem ...");
+        em.close();
+    }
+
+    private void detach(int id) {
+        System.out.println("Start detach ...");
+        em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        Item item = em.find(Item.class, id);
+        em.detach(item);
+        item.setName("Updated name");
+
+        try {
+            tx.begin();
+            em.persist(item);
+            tx.commit();
+        } catch (Exception ex) {
+            System.out.println("This will end in an exception as the persist-method will try " +
+                                       "to create a new record instead of updating the existing one");
+        }
+        System.out.println("End detach ...");
+        em.close();
+    }
+
+    private void checkPersistenceContext(int id) {
+        System.out.println("Start checkPersistenceContext ...");
+        em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        Item item = em.find(Item.class, id);
+        if(em.contains(item)) {
+            System.out.println(item + " is managed");
+        } else {
+            System.out.println(item + " is unmanaged");
+        }
+        System.out.println("End checkPersistenceContext ...");
         em.close();
     }
 
     public static void main(String[] args) {
         Main app = new Main();
-        app.createAndUpdate();
-        app.findDetail();
+        Item newItem = new Item();
+        newItem.setId(2);
+        newItem.setMake("Make");
+        newItem.setCurrentStock(88);
+        newItem.setName("Short screw");
+        newItem.setType("SCREWS");
+
+        app.createNewItem(newItem);
+        Item foundItem = app.findItemById(newItem.getId());
+        app.getReference(newItem.getId());
+        app.removeItem(foundItem);
+        app.findItemById(foundItem.getId());
+
+        newItem = app.createNewItem(newItem);
+        app.detach(newItem.getId());
+        app.checkPersistenceContext(newItem.getId());
+
         app.emf.close();
     }
 }

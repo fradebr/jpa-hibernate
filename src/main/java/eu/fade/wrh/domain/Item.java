@@ -52,4 +52,15 @@ public class Item {
     public void setMake(final String make) {
         this.make = make;
     }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", currentStock=" + currentStock +
+                ", type='" + type + '\'' +
+                ", make='" + make + '\'' +
+                '}';
+    }
 }
