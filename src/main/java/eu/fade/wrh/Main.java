@@ -8,6 +8,7 @@ import javax.persistence.Persistence;
 
 import java.time.LocalDate;
 
+import eu.fade.wrh.domain.Address;
 import eu.fade.wrh.domain.Employee;
 import eu.fade.wrh.domain.EmployeeService;
 import eu.fade.wrh.domain.Function;
@@ -185,6 +186,13 @@ public class Main {
         employee.setFunction(Function.EMPLOYEE);
         employee.setActive(true);
         employee.setWage(2000.0);
+
+        Address address = new Address();
+        address.setStreet("My street");
+        address.setNumber("15");
+        address.setZip("123456");
+        address.setCity("My city");
+        employee.setAddress(address);
 
         employee = service.createNewEmployee(employee);
         System.out.println(employee);

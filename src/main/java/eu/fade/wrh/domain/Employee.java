@@ -2,6 +2,7 @@ package eu.fade.wrh.domain;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -40,6 +41,9 @@ public class Employee {
     private Function function;
     @Column(nullable = false)
     private double wage;
+
+    @Embedded
+    private Address address = new Address();
 
     public int getId() {
         return id;
@@ -109,6 +113,14 @@ public class Employee {
         this.wage = wage;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(final Address address) {
+        this.address = address;
+    }
+
     public int getSeniority() {
         return (int)ChronoUnit.YEARS.between(dateInService, LocalDate.now());
     }
@@ -125,6 +137,7 @@ public class Employee {
                 ", picture=" + Arrays.toString(picture) +
                 ", function=" + function +
                 ", wage=" + wage +
+                ", address=" + address +
                 '}';
     }
 }
