@@ -3,6 +3,7 @@ package eu.fade.wrh;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.FlushModeType;
 import javax.persistence.Persistence;
 
 import eu.fade.wrh.domain.Item;
@@ -101,6 +102,42 @@ public class Main {
         em.close();
     }
 
+    private void withFlushModeCommit(int id, int id2) {
+        System.out.println("Start withFlushModeCommit ...");
+        em = emf.createEntityManager();
+        em.setFlushMode(FlushModeType.COMMIT);
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        Item item = em.find(Item.class, id);
+        item.setName("Updated name - commit");
+        Item item2 = em.find(Item.class, id2);
+        System.out.println("Item2 = " + item2);
+        System.out.println("Committing the transaction now");
+        em.persist(item);
+        tx.commit();
+
+        System.out.println("End withFlushModeCommit ...");
+        em.close();
+    }
+
+    private void withFlushModeAuto(int id, int id2) {
+        System.out.println("Start withFlushModeAuto ...");
+        em = emf.createEntityManager();
+        em.setFlushMode(FlushModeType.AUTO);
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        Item item = em.find(Item.class, id);
+        item.setName("Updated name - auto");
+        Item item2 = em.find(Item.class, id2);
+        System.out.println("Item2 = " + item2);
+        System.out.println("Committing the transaction now");
+        em.persist(item);
+        tx.commit();
+
+        System.out.println("End withFlushModeAuto ...");
+        em.close();
+    }
+
     public static void main(String[] args) {
         Main app = new Main();
         Item newItem = new Item();
@@ -120,6 +157,15 @@ public class Main {
         app.detach(newItem.getId());
         app.checkPersistenceContext(newItem.getId());
 
+        Item anotherNewItem = new Item();
+        anotherNewItem.setId(3);
+        anotherNewItem.setMake("Make");
+        anotherNewItem.setCurrentStock(50);
+        anotherNewItem.setName("Long screw");
+        anotherNewItem.setType("SCREWS");
+        app.createNewItem(anotherNewItem);
+        app.withFlushModeCommit(newItem.getId(), anotherNewItem.getId());
+        app.withFlushModeAuto(newItem.getId(), anotherNewItem.getId());
         app.emf.close();
     }
 }
