@@ -7,6 +7,7 @@ import javax.persistence.FlushModeType;
 import javax.persistence.Persistence;
 
 import eu.fade.wrh.domain.Item;
+import eu.fade.wrh.domain.Make;
 
 public class Main {
 
@@ -138,6 +139,37 @@ public class Main {
         em.close();
     }
 
+    private void createAndUpdateMake() {
+        Make make = new Make();
+        make.setName("Make");
+        make.setOrderAmount(25);
+        make.setDiscount(10.0);
+
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        tx.begin();
+        em.persist(make);
+        tx.commit();
+        System.out.println(make);
+
+        make.setOrderAmount(35);
+        tx.begin();
+        em.persist(make);
+        tx.commit();
+        System.out.println(make);
+
+        Make make2 = new Make();
+        make.setName("Make 2");
+        make.setOrderAmount(10);
+        make.setDiscount(5.0);
+        tx.begin();
+        em.persist(make2);
+        tx.commit();
+        System.out.println(make2);
+        em.close();
+    }
+
     public static void main(String[] args) {
         Main app = new Main();
         Item newItem = new Item();
@@ -166,6 +198,9 @@ public class Main {
         app.createNewItem(anotherNewItem);
         app.withFlushModeCommit(newItem.getId(), anotherNewItem.getId());
         app.withFlushModeAuto(newItem.getId(), anotherNewItem.getId());
+
+        app.createAndUpdateMake();
+
         app.emf.close();
     }
 }
