@@ -6,6 +6,11 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.FlushModeType;
 import javax.persistence.Persistence;
 
+import java.time.LocalDate;
+
+import eu.fade.wrh.domain.Employee;
+import eu.fade.wrh.domain.EmployeeService;
+import eu.fade.wrh.domain.Function;
 import eu.fade.wrh.domain.Item;
 import eu.fade.wrh.domain.Make;
 
@@ -170,8 +175,25 @@ public class Main {
         em.close();
     }
 
-    public static void main(String[] args) {
-        Main app = new Main();
+    private void useEmployeeService() {
+        EmployeeService service = new EmployeeService();
+        Employee employee = new Employee();
+        employee.setFirstName("Alain");
+        employee.setLastName("Vandam");
+        employee.setEmployeeNumber("088123");
+        employee.setDateInService(LocalDate.of(2018, 11, 19));
+        employee.setFunction(Function.EMPLOYEE);
+        employee.setActive(true);
+        employee.setWage(2000.0);
+
+        employee = service.createNewEmployee(employee);
+        System.out.println(employee);
+        Employee foundEmployee = service.getEmployeeById(employee.getId());
+        System.out.println(foundEmployee);
+        System.out.println("The seniority of " + employee.getFirstName() + " " + employee.getLastName() + " is " + employee.getSeniority() + " years");
+    }
+
+    private void createItemsAndMakes() {
         Item newItem = new Item();
         newItem.setId(2);
         newItem.setMake("Make");
@@ -179,15 +201,15 @@ public class Main {
         newItem.setName("Short screw");
         newItem.setType("SCREWS");
 
-        app.createNewItem(newItem);
-        Item foundItem = app.findItemById(newItem.getId());
-        app.getReference(newItem.getId());
-        app.removeItem(foundItem);
-        app.findItemById(foundItem.getId());
+        createNewItem(newItem);
+        Item foundItem = findItemById(newItem.getId());
+        getReference(newItem.getId());
+        removeItem(foundItem);
+        findItemById(foundItem.getId());
 
-        newItem = app.createNewItem(newItem);
-        app.detach(newItem.getId());
-        app.checkPersistenceContext(newItem.getId());
+        newItem = createNewItem(newItem);
+        detach(newItem.getId());
+        checkPersistenceContext(newItem.getId());
 
         Item anotherNewItem = new Item();
         anotherNewItem.setId(3);
@@ -195,12 +217,23 @@ public class Main {
         anotherNewItem.setCurrentStock(50);
         anotherNewItem.setName("Long screw");
         anotherNewItem.setType("SCREWS");
-        app.createNewItem(anotherNewItem);
-        app.withFlushModeCommit(newItem.getId(), anotherNewItem.getId());
-        app.withFlushModeAuto(newItem.getId(), anotherNewItem.getId());
+        createNewItem(anotherNewItem);
+        withFlushModeCommit(newItem.getId(), anotherNewItem.getId());
+        withFlushModeAuto(newItem.getId(), anotherNewItem.getId());
 
-        app.createAndUpdateMake();
+        createAndUpdateMake();
 
-        app.emf.close();
+        emf.close();
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        Main app = new Main();
+        app.createItemsAndMakes();
+
+        Thread.sleep(1000);
+
+        System.out.println("_______________________________________________________________________________________________________");
+        System.out.println("_______________________________________________________________________________________________________");
+        app.useEmployeeService();
     }
 }
