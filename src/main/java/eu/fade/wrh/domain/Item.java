@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -17,7 +18,10 @@ public class Item {
     private String name;
     private Integer currentStock;
     private String type;
-    private String make;
+
+    @ManyToOne
+    @JoinColumn(name = "make_id")
+    private Make make;
 
     @OneToOne(orphanRemoval = true, cascade = {CascadeType.ALL})
     @JoinColumn(name = "detail_id")
@@ -56,14 +60,6 @@ public class Item {
         this.type = type;
     }
 
-    public String getMake() {
-        return make;
-    }
-
-    public void setMake(final String make) {
-        this.make = make;
-    }
-
     public Detail getDetail() {
         return detail;
     }
@@ -88,6 +84,14 @@ public class Item {
         return this;
     }
 
+    public Make getMake() {
+        return make;
+    }
+
+    public void setMake(final Make make) {
+        this.make = make;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
@@ -95,7 +99,6 @@ public class Item {
                 ", name='" + name + '\'' +
                 ", currentStock=" + currentStock +
                 ", type='" + type + '\'' +
-                ", make='" + make + '\'' +
                 ", detail=" + detail +
                 '}';
     }

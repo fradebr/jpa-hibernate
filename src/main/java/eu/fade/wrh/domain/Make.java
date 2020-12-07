@@ -1,10 +1,14 @@
 package eu.fade.wrh.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Make {
@@ -17,6 +21,9 @@ public class Make {
     private String name;
     private Double discount;
     private Integer OrderAmount;
+
+    @OneToMany(mappedBy = "make", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private Set<Item> items = new HashSet<>();
 
     public int getId() {
         return id;
@@ -56,6 +63,28 @@ public class Make {
 
     public void setOrderAmount(final Integer orderAmount) {
         OrderAmount = orderAmount;
+    }
+
+    public Set<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(final Set<Item> items) {
+        this.items = items;
+    }
+
+    public Make addItem(Item item) {
+        this.items.add(item);
+        item.setMake(this);
+
+        return this;
+    }
+
+    public Make removeItem(Item item) {
+        this.items.remove(item);
+        item.setMake(null);
+
+        return this;
     }
 
     @Override

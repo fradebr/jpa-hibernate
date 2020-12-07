@@ -20,6 +20,7 @@ import eu.fade.wrh.domain.Function;
 import eu.fade.wrh.domain.Item;
 import eu.fade.wrh.domain.ItemService;
 import eu.fade.wrh.domain.Make;
+import eu.fade.wrh.domain.MakeService;
 
 public class Main {
 
@@ -210,7 +211,6 @@ public class Main {
     private void createItemsAndMakes() {
         Item newItem = new Item();
         newItem.setId(2);
-        newItem.setMake("Make");
         newItem.setCurrentStock(88);
         newItem.setName("Short screw");
         newItem.setType("SCREWS");
@@ -227,7 +227,6 @@ public class Main {
 
         Item anotherNewItem = new Item();
         anotherNewItem.setId(3);
-        anotherNewItem.setMake("Make");
         anotherNewItem.setCurrentStock(50);
         anotherNewItem.setName("Long screw");
         anotherNewItem.setType("SCREWS");
@@ -282,7 +281,6 @@ public class Main {
         Item item = new Item();
         item.setName("Item 1");
         item.setCurrentStock(20);
-        item.setMake("Make 1");
 
         Detail detail = new Detail();
         detail.setMaximumStock(99);
@@ -301,6 +299,33 @@ public class Main {
         System.out.println(item3);
     }
 
+    private void useMakeService() {
+        MakeService service = new MakeService();
+        Make make = new Make();
+        make.setName("Make 1");
+        make.setOrderAmount(20);
+        make.setDiscount(10.0);
+
+        Item item = new Item();
+        item.setName("Item 1");
+        item.setCurrentStock(20);
+
+        make.addItem(item);
+        service.createNewMake(make);
+        Make make2 = service.getMakeById(make.getId());
+        System.out.println(make2);
+        make2.getItems().forEach(item1 -> System.out.println(item1.getName() + " - " + item1.getCurrentStock()));
+
+        make2.setOrderAmount(55);
+        item.setCurrentStock(99);
+        service.updateMake(make);
+
+        Make make3 = service.getMakeById(make.getId());
+        System.out.println(make3);
+        make3.getItems().forEach(item1 -> System.out.println(item1.getName() + " - " + item1.getCurrentStock()));
+
+    }
+
     public static void main(String[] args) throws InterruptedException {
         Main app = new Main();
 //        app.createItemsAndMakes();
@@ -316,6 +341,7 @@ public class Main {
         System.out.println("_______________________________________________________________________________________________________");
         System.out.println("_______________________________________________________________________________________________________");
 //        app.useBranchService();
-        app.useItemService();
+//        app.useItemService();
+        app.useMakeService();
     }
 }
