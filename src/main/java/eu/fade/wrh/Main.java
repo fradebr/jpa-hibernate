@@ -7,8 +7,12 @@ import javax.persistence.FlushModeType;
 import javax.persistence.Persistence;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import eu.fade.wrh.domain.Address;
+import eu.fade.wrh.domain.Branch;
+import eu.fade.wrh.domain.BranchService;
+import eu.fade.wrh.domain.Department;
 import eu.fade.wrh.domain.Employee;
 import eu.fade.wrh.domain.EmployeeService;
 import eu.fade.wrh.domain.Function;
@@ -17,7 +21,7 @@ import eu.fade.wrh.domain.Make;
 
 public class Main {
 
-    EntityManagerFactory emf = Persistence.createEntityManagerFactory("warehouse");;
+    EntityManagerFactory emf;
     EntityManager em;
 
 
@@ -234,14 +238,56 @@ public class Main {
         emf.close();
     }
 
+    private void useBranchService() {
+        BranchService service = new BranchService();
+
+        Branch branch = new Branch();
+        branch.setName("Branch 1");
+        branch.setLocation("Location 1");
+
+        Department dep1 = new Department();
+        dep1.setName("DEP 1");
+        dep1.setManager("Manager 1");
+
+        Department dep2 = new Department();
+        dep2.setName("DEP 2");
+        dep2.setManager("Manager 2");
+
+        Department dep3 = new Department();
+        dep3.setName("DEP 3");
+        dep3.setManager("Manager 2");
+
+        branch.setDepartments(List.of(dep1, dep2, dep3));
+
+        branch = service.addBranch(branch);
+        System.out.println(branch);
+
+        Branch branch2 = service.getBranchById(branch.getId());
+        branch2.setLocation("Updated location");
+        branch2 = service.updateBranch(branch2);
+        System.out.println(branch2);
+
+        Branch branch3 = service.getBranchById(branch.getId());
+        service.deleteBranch(branch3);
+        Branch branch4 = service.getBranchById(branch.getId());
+        System.out.println(branch4);
+
+    }
+
     public static void main(String[] args) throws InterruptedException {
         Main app = new Main();
-        app.createItemsAndMakes();
+//        app.createItemsAndMakes();
+//
+//        Thread.sleep(2000);
+//
+//        System.out.println("_______________________________________________________________________________________________________");
+//        System.out.println("_______________________________________________________________________________________________________");
+//        app.useEmployeeService();
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         System.out.println("_______________________________________________________________________________________________________");
         System.out.println("_______________________________________________________________________________________________________");
-        app.useEmployeeService();
+        app.useBranchService();
     }
 }
