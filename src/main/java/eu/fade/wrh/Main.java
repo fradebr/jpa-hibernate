@@ -13,10 +13,12 @@ import eu.fade.wrh.domain.Address;
 import eu.fade.wrh.domain.Branch;
 import eu.fade.wrh.domain.BranchService;
 import eu.fade.wrh.domain.Department;
+import eu.fade.wrh.domain.Detail;
 import eu.fade.wrh.domain.Employee;
 import eu.fade.wrh.domain.EmployeeService;
 import eu.fade.wrh.domain.Function;
 import eu.fade.wrh.domain.Item;
+import eu.fade.wrh.domain.ItemService;
 import eu.fade.wrh.domain.Make;
 
 public class Main {
@@ -274,6 +276,31 @@ public class Main {
 
     }
 
+    private void useItemService() {
+        ItemService service = new ItemService();
+
+        Item item = new Item();
+        item.setName("Item 1");
+        item.setCurrentStock(20);
+        item.setMake("Make 1");
+
+        Detail detail = new Detail();
+        detail.setMaximumStock(99);
+        detail.setMinimumStock(5);
+        detail.setPrice(12.0);
+
+        item.addDetail(detail);
+        service.createNewItem(item);
+
+        Item item2 = service.getItemById(item.getId());
+        System.out.println(item2);
+
+        service.deleteItem(item);
+
+        Item item3 = service.getItemById(item.getId());
+        System.out.println(item3);
+    }
+
     public static void main(String[] args) throws InterruptedException {
         Main app = new Main();
 //        app.createItemsAndMakes();
@@ -288,6 +315,7 @@ public class Main {
 
         System.out.println("_______________________________________________________________________________________________________");
         System.out.println("_______________________________________________________________________________________________________");
-        app.useBranchService();
+//        app.useBranchService();
+        app.useItemService();
     }
 }
