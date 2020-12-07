@@ -13,6 +13,7 @@ import eu.fade.wrh.domain.Address;
 import eu.fade.wrh.domain.Branch;
 import eu.fade.wrh.domain.BranchService;
 import eu.fade.wrh.domain.Department;
+import eu.fade.wrh.domain.DepartmentService;
 import eu.fade.wrh.domain.Detail;
 import eu.fade.wrh.domain.Employee;
 import eu.fade.wrh.domain.EmployeeService;
@@ -258,7 +259,7 @@ public class Main {
         dep3.setName("DEP 3");
         dep3.setManager("Manager 2");
 
-        branch.setDepartments(List.of(dep1, dep2, dep3));
+//        branch.setDepartments(List.of(dep1, dep2, dep3));
 
         branch = service.addBranch(branch);
         System.out.println(branch);
@@ -326,6 +327,33 @@ public class Main {
 
     }
 
+    private void userDepartmentService() {
+        DepartmentService departmentService = new DepartmentService();
+        Department department = new Department();
+        department.setName("Department 1");
+        department.setManager("Manager 1");
+
+        Employee employee = new Employee();
+        employee.setFirstName("Alain");
+        employee.setLastName("Vandam");
+        employee.setEmployeeNumber("088123");
+        employee.setDateInService(LocalDate.of(2018, 11, 19));
+        employee.setFunction(Function.EMPLOYEE);
+        employee.setActive(true);
+        employee.setWage(2000.0);
+
+        Address address = new Address();
+        address.setStreet("My street");
+        address.setNumber("15");
+        address.setZip("123456");
+        address.setCity("My city");
+        employee.setAddress(address);
+
+        department.addEmployee(employee);
+        departmentService.createNewDepartment(department);
+
+    }
+
     public static void main(String[] args) throws InterruptedException {
         Main app = new Main();
 //        app.createItemsAndMakes();
@@ -342,6 +370,7 @@ public class Main {
         System.out.println("_______________________________________________________________________________________________________");
 //        app.useBranchService();
 //        app.useItemService();
-        app.useMakeService();
+//        app.useMakeService();
+        app.userDepartmentService();
     }
 }

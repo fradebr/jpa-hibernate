@@ -10,11 +10,16 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "employees")
@@ -41,6 +46,12 @@ public class Employee {
     private Function function;
     @Column(nullable = false)
     private double wage;
+
+    @ManyToMany
+    @JoinTable(name = "employee_department",
+            joinColumns = {@JoinColumn(name = "employee_id")},
+            inverseJoinColumns = {@JoinColumn(name = "department_id")})
+    private Set<Department> departments = new HashSet<>();
 
     @Embedded
     private Address address = new Address();
@@ -123,6 +134,26 @@ public class Employee {
 
     public int getSeniority() {
         return (int)ChronoUnit.YEARS.between(dateInService, LocalDate.now());
+    }
+
+    public Set<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(final Set<Department> departments) {
+        this.departments = departments;
+    }
+
+    public Employee addDepartment(Department department) {
+        this.departments.add(department);
+//        department.addEmployee(this);
+        return this;
+    }
+
+    public Employee removeDepartment(Department department) {
+        this.departments.remove(department);
+//        department.removeEmployee(this);
+        return this;
     }
 
     @Override

@@ -21,9 +21,9 @@ public class Branch {
     private String name;
     private String location;
 
-    @ElementCollection
-    @CollectionTable(name = "departments")
-    private List<Department> departments = new ArrayList<>();
+//    @ElementCollection
+//    @CollectionTable(name = "departments")
+//    private List<Department> departments = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -49,13 +49,13 @@ public class Branch {
         this.location = location;
     }
 
-    public List<Department> getDepartments() {
-        return departments;
-    }
-
-    public void setDepartments(final List<Department> departments) {
-        this.departments = departments;
-    }
+//    public List<Department> getDepartments() {
+//        return departments;
+//    }
+//
+//    public void setDepartments(final List<Department> departments) {
+//        this.departments = departments;
+//    }
 
     @Override
     public String toString() {
@@ -63,7 +63,7 @@ public class Branch {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", location='" + location + '\'' +
-                ", departments=" + departments +
+//                ", departments=" + departments +
                 '}';
     }
 }
