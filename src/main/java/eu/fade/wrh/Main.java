@@ -354,6 +354,28 @@ public class Main {
 
     }
 
+    private void retrieveItems() {
+        ItemService service = new ItemService();
+
+        // First add a couple of items
+        Item newItem = new Item();
+        newItem.setCurrentStock(88);
+        newItem.setName("Short screw");
+        newItem.setType("SCREWS");
+
+        service.createNewItem(newItem);
+
+        newItem = new Item();
+        newItem.setCurrentStock(23);
+        newItem.setName("Long screw");
+        newItem.setType("SCREWS");
+
+        service.createNewItem(newItem);
+
+        service.getAllItems().forEach(System.out::println);
+
+    }
+
     public static void main(String[] args) throws InterruptedException {
         Main app = new Main();
 //        app.createItemsAndMakes();
@@ -371,6 +393,7 @@ public class Main {
 //        app.useBranchService();
 //        app.useItemService();
 //        app.useMakeService();
-        app.userDepartmentService();
+//        app.userDepartmentService();
+        app.retrieveItems();
     }
 }

@@ -4,6 +4,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 public class ItemService {
 
@@ -32,6 +34,13 @@ public class ItemService {
 
     public Item getItemById(int id) {
         return em.find(Item.class, id);
+    }
+
+
+    public List<Item> getAllItems() {
+        TypedQuery<Item> query = em.createQuery("select item from Item as item", Item.class);
+
+        return query.getResultList();
     }
 
 }
